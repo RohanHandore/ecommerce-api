@@ -64,14 +64,14 @@ userSchema.statics.findByCredentials = async (email, password) => {
 }
 
 //Hash plain password before saving
-userSchema.pre('save', async function(next) {
-    const user = this
-    if (user.isModified('password')) {
-        user.password = await bcryptjs.hash(user.password, 8)
-    }
+// userSchema.pre('save', async function(next) {
+//     const user = this
+//     if (user.isModified('password')) {
+//         user.password = await bcryptjs.hash(user.password, 8)
+//     }
 
-    next()
-})
+//     next()
+// })
 
 
 const User = mongoose.model('User', userSchema)
