@@ -1,7 +1,7 @@
-import mongoose from 'mongoose'
-const ObjectID = mongoose.Schema.Types.ObjectId
+import { Schema, model } from 'mongoose'
+const ObjectID = Schema.Types.ObjectId
 
-const cartSchema = mongoose.Schema({
+const cartSchema = new Schema({
     owner : {
         type: ObjectID,
         required: true,
@@ -31,6 +31,6 @@ const cartSchema = mongoose.Schema({
     timestamps: true
 })
 
-const Cart = mongoose.model('Cart', cartSchema)
+const Cart = model('Cart', cartSchema)
 
 export default Cart

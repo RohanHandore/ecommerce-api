@@ -1,7 +1,7 @@
-import  mongoose from 'mongoose'
-const ObjectID = mongoose.Schema.Types.ObjectId
+import { Schema, model } from 'mongoose'
+const ObjectID = Schema.Types.ObjectId
 
-const orderSchema = mongoose.Schema({
+const orderSchema = new Schema({
     owner : {
         type: ObjectID,
         required: true,
@@ -31,6 +31,6 @@ const orderSchema = mongoose.Schema({
     timestamps: true
 })
 
-const Order = mongoose.model('Order', orderSchema)
+const Order = model('Order', orderSchema)
 
 export default Order

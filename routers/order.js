@@ -1,8 +1,7 @@
-import  Router  from "express"
-import find from "../models/order.js"
-import create from "../models/order.js"
-import findOne from "../models/cart.js"
-import  findByIdAndDelete  from "../models/cart.js"
+import { Router } from "express"
+// import Flutterwave from "flutterwave-node-v3"
+import Order from "../models/order.js"
+import Cart from "../models/cart.js"
 import User from "../models/user.js"
 import Auth from "../middleware/auth.js"
 
@@ -20,7 +19,7 @@ commenting that out till I find a fix for flutterwave public key required error
 router.get('/orders', Auth, async (req, res) => {
     const owner = req.user._id;
     try {
-        const order = await find({ owner: owner }).sort({ date: -1 });
+        const order = await Order.find({ owner: owner }).sort({ date: -1 });
         if(order) {
             return res.status(200).send(order)
         }
@@ -38,7 +37,7 @@ router.post('/order/checkout', Auth, async(req, res) => {
         
 
         //find cart and user 
-        let cart = await findOne({owner})
+        let cart = await Cart.findOne({owner})
         let user = req.user
         if(cart) {
             
@@ -62,13 +61,13 @@ router.post('/order/checkout', Auth, async(req, res) => {
                 })
                 console.log(callValidate)
                 if(callValidate.status === 'success') {
-                    const order = await create({
+                    const order = await Order.create({
                         owner,
                         items: cart.items,
                         bill: cart.bill
                     })
                     //delete cart
-                    const data = await findByIdAndDelete({_id: cart.id})
+                    const data = await Cart.findByIdAndDelete({_id: cart.id})
                     return res.status(201).send({status: 'Payment successful', order})
                 } else {
                     res.status(400).send('payment failed')

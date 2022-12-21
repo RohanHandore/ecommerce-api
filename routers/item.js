@@ -1,8 +1,5 @@
-import Router  from 'express'
+import { Router } from 'express'
 import Item from '../models/item.js'
-import  find from '../models/item.js'
-import findOneAndDelete  from '../models/item.js'
-import findOne from '../models/item.js'
 import Auth from '../middleware/auth.js'
 
 const router = new Router()
@@ -12,7 +9,7 @@ router.get('/items', Auth, async(req, res) => {
   
     if(req.query.user == 1) {
         try {
-           const items = await find({ owner: req.user._id})
+           const items = await Item.find({ owner: req.user._id})
             res.status(200).send(items)
         } catch (error) {
             console.log(error)
@@ -31,7 +28,7 @@ router.get('/items', Auth, async(req, res) => {
 //fetch an item
 router.get('/items/:id', Auth, async(req, res) => {
     try{
-        const item = await findOne({_id: req.params.id})
+        const item = await Item.findOne({_id: req.params.id})
         if(!item) {
             res.status(404).send({error: "Item not found"})
         }
@@ -69,7 +66,7 @@ router.patch('/items/:id', Auth, async(req, res) => {
     }
 
     try {
-        const item = await findOne({ _id: req.params.id})
+        const item = await Item.findOne({ _id: req.params.id})
     
         if(!item){
             return res.status(404).send()
@@ -86,7 +83,7 @@ router.patch('/items/:id', Auth, async(req, res) => {
 //delete item
 router.delete('/items/:id', Auth, async(req, res) => {
     try {
-        const deletedItem = await findOneAndDelete( {_id: req.params.id} )
+        const deletedItem = await Item.findOneAndDelete( {_id: req.params.id} )
         if(!deletedItem) {
             res.status(404).send({error: "Item not found"})
         }

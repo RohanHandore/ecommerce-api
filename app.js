@@ -1,22 +1,26 @@
-import userRouter from './routers/userRouts.js';
-import itemRouter from './routers/itemRouts.js';
-import cartRouter from './routers/cartRouts.js';
-import orderRouter from './routers/orderRouts.js';
-import express  from 'express';
-import conn from './db/mongoose.js';
-import dotenv from 'dotenv';
+import express, { json } from 'express';
+// import { join } from 'path';
+import userRouter from './routers/user.js';
+import itemRouter from './routers/item.js';
+import cartRouter from './routers/cart.js';
+import orderRouter from './routers/order.js';
+import './db/mongoose.js';
 
-
-dotenv.config();
-const port = process.env.PORT 
+const port = process.env.PORT | 80
 
 const app = express()
 
-app.use(express.json())
+app.use(json())
 app.use(userRouter)
 app.use(itemRouter)
 app.use(cartRouter)
 app.use(orderRouter)
 
+// const publicDirectory = join(__dirname, '../public')
+// app.use(static(publicDirectory))
 
-app.listen(port, conn(port))
+
+
+app.listen(port, () => {
+    console.log('server listening on port ' + port)
+})

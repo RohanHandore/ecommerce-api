@@ -1,9 +1,10 @@
-import mongoose from 'mongoose'
-import compare from 'bcryptjs'
-import bcryptjs  from 'bcryptjs'
-import sign from 'jsonwebtoken'
+import { Schema, model } from 'mongoose'
+import validator from 'validator'
+import  bcryptjs  from 'bcryptjs'
+import jsonwebtoken from 'jsonwebtoken'
+const JWT_SECRET = "rohanapi"
 
-const userSchema = mongoose.Schema({
+const userSchema = new Schema({
     name: {
         type: String,
         required: true,
@@ -15,6 +16,11 @@ const userSchema = mongoose.Schema({
         required: true,
         unique: true,
         lowercase: true,
+        validate( value ) {
+            if( !validator.isEmail( value )) {
+                throw new Error( 'Email is invalid' )
+            }
+        }
     },
     password: {
         type: String,
@@ -26,8 +32,7 @@ const userSchema = mongoose.Schema({
                 throw new Error('password musn\'t contain password')
             }
         }
-    }
-    ,
+    },
     tokens: [{
         token: {
             type: String,
@@ -42,7 +47,7 @@ const userSchema = mongoose.Schema({
 //Generate auth token
 userSchema.methods.generateAuthToken = async function () {
     const user = this
-    const token = sign({ _id: user._id.toString()}, process.env.JWT_SECRET)
+    const token = jsonwebtoken.sign({ _id: user._id.toString()}, JWT_SECRET)
     user.tokens = user.tokens.concat({token})
      await user.save()
     return token
@@ -50,11 +55,11 @@ userSchema.methods.generateAuthToken = async function () {
 
 //login in users
 userSchema.statics.findByCredentials = async (email, password) => {
-    const user = await User.findOne({ email })
+    const user = await User.findOne({email: email})
     if (!user) {
         throw new Error('Unable to log in')
     }
-    const isMatch = await compare(password, user.password)
+    const isMatch = await bcryptjs.compare(password, user.password)
     console.log(isMatch)
     if(!isMatch) {
         throw new Error('Unable to login')
@@ -64,16 +69,16 @@ userSchema.statics.findByCredentials = async (email, password) => {
 }
 
 //Hash plain password before saving
-// userSchema.pre('save', async function(next) {
-//     const user = this
-//     if (user.isModified('password')) {
-//         user.password = await bcryptjs.hash(user.password, 8)
-//     }
+userSchema.pre('save', async function(next) {
+    const user = this
+    if (user.isModified('password')) {
+        user.password = await bcryptjs.hash(user.password, 8)
+    }
 
-//     next()
-// })
+    next()
+})
 
 
-const User = mongoose.model('User', userSchema)
+const User = model('User', userSchema)
 
 export default User

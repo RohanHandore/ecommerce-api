@@ -20,10 +20,18 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.8.1",
     "stripe": "^8.193.0",
-    "validator": "^13.6.0"
+    "validator": "^13.7.0"
   },
   "devDependencies": {
     "env-cmd": "^10.1.0",
     "nodemon": "^2.0.12"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RohanHandore/ecommerce-api.git"
+  },
+  "bugs": {
+    "url": "https://github.com/RohanHandore/ecommerce-api/issues"
+  },
+  "homepage": "https://github.com/RohanHandore/ecommerce-api#readme"
 }

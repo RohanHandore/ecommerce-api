@@ -1,7 +1,6 @@
-import Router  from "express";
-import findOne from "../models/cart.js";
-import create  from "../models/cart.js";
-// import findOne as _findOne  from "../models/item.js";
+import { Router } from "express";
+import Cart from "../models/cart.js";
+import Item from "../models/item.js";
 import Auth from "../middleware/auth.js";
 
 const router = new Router();
@@ -12,7 +11,7 @@ router.get("/cart", Auth, async (req, res) => {
   const owner = req.user._id;
 
   try {
-    const cart = await findOne({ owner });
+    const cart = await Cart.findOne({ owner });
     if (cart && cart.items.length > 0) {
       res.status(200).send(cart);
     } else {
@@ -29,8 +28,8 @@ router.post("/cart", Auth, async (req, res) => {
   const { itemId, quantity } = req.body;
 
   try {
-    const cart = await findOne({ owner });
-    const item = await _findOne({ _id: itemId });
+    const cart = await Cart.findOne({ owner });
+    const item = await Item.findOne({ _id: itemId });
 
     if (!item) {
       res.status(404).send({ message: "item not found" });
@@ -65,7 +64,7 @@ router.post("/cart", Auth, async (req, res) => {
       }
     } else {
       //no cart exists, create one
-      const newCart = await create({
+      const newCart = await Cart.create({
         owner,
         items: [{ itemId, name, quantity, price }],
         bill: quantity * price,
@@ -84,7 +83,7 @@ router.delete("/cart/", Auth, async (req, res) => {
   const owner = req.user._id;
  const itemId = req.query.itemId;
   try {
-    let cart = await findOne({ owner });
+    let cart = await Cart.findOne({ owner });
 
     const itemIndex = cart.items.findIndex((item) => item.itemId == itemId);
     

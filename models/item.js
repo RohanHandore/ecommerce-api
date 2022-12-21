@@ -1,7 +1,7 @@
-import mongoose from 'mongoose'
-const ObjectID = mongoose.Schema.Types.ObjectId
+import { Schema, model } from 'mongoose'
+const ObjectID = Schema.Types.ObjectId
 
-const itemSchema = mongoose.Schema({
+const itemSchema = new Schema({
     owner : {
         type: ObjectID,
         required: true,
@@ -28,6 +28,6 @@ const itemSchema = mongoose.Schema({
     timestamps: true
 })
 
-const Item = mongoose.model('Item', itemSchema)
+const Item = model('Item', itemSchema)
 
 export default Item
